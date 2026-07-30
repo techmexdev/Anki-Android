@@ -138,6 +138,73 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/brainlift_evidence"
+            style="@style/CardView.ViewerStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/reviewer_side_margin"
+            android:layout_marginTop="6dp"
+            app:cardElevation="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="7dp">
+
+                <TextView
+                    android:id="@+id/brainlift_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/brainlift_evidence_title"
+                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/brainlift_subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/brainlift_evidence_subtitle"
+                    android:textAppearance="?attr/textAppearanceBodySmall" />
+
+                <TextView
+                    android:id="@+id/brainlift_memory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    tools:text="Memory: 82% · range 75-88%\n18/20 successful reviews · coverage 86% · confidence high · Updated 2026-07-29 16:00 UTC" />
+
+                <TextView
+                    android:id="@+id/brainlift_performance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    tools:text="Performance: Not enough evidence\nWaiting for rated reviews (4/10) · coverage 43% · confidence none · Updated 2026-07-29 16:00 UTC" />
+
+                <TextView
+                    android:id="@+id/brainlift_readiness"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    tools:text="Readiness: Not enough evidence\nWaiting for held-out Performance evidence · coverage 43% · confidence none · Updated 2026-07-29 16:00 UTC" />
+
+                <TextView
+                    android:id="@+id/brainlift_commit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:ellipsize="middle"
+                    android:maxLines="1"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    tools:text="Anki core 3890e12c9e48c028c3f12aa58cb64bd9f8895e30" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- The elevation should be higher than the one used by the WebView
              container, so the voice recording button can be dragged above it -->
         <LinearLayout

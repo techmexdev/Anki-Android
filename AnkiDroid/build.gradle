@@ -60,6 +60,7 @@ def gitCommitHash = providers.exec {
  */
 def buildTimeMillis = providers.gradleProperty("buildTime")
     .orElse(providers.provider { System.currentTimeMillis().toString() })
+def ankiCoreCommit = providers.gradleProperty("ankiCommit").orElse("not-embedded")
 
 android {
     namespace = "com.ichi2.anki"
@@ -87,6 +88,8 @@ android {
         buildConfigField "String", "BACKEND_VERSION", "\"${libs.versions.ankiBackend.get()}\""
         buildConfigField "Boolean", "ENABLE_LEAK_CANARY", "false"
         buildConfigField "String", "GIT_COMMIT_HASH", "\"${gitCommitHash.get()}\""
+        buildConfigField "String", "ANKI_CORE_COMMIT", "\"${ankiCoreCommit.get()}\""
+        buildConfigField "Boolean", "BRAINLIFT_PROOF", "false"
         buildConfigField "long", "BUILD_TIME", buildTimeMillis.get()
         resValue "string", "app_name", "AnkiDroid"
 
@@ -205,6 +208,16 @@ android {
 
             resValue 'color', 'anki_foreground_icon_color_0', "#FF29B6F6"
             resValue 'color', 'anki_foreground_icon_color_1', "#FF0288D1"
+        }
+
+        create('brainliftProof') {
+            initWith debug
+            applicationIdSuffix ".brainlift"
+            versionNameSuffix "-brainlift"
+            matchingFallbacks = ['debug']
+            buildConfigField "Boolean", "BRAINLIFT_PROOF", "true"
+            buildConfigField "String", "ANKI_CORE_COMMIT", "\"${ankiCoreCommit.get()}\""
+            resValue "string", "app_name", "Brainlift Anki"
         }
 
         create('benchmark') {

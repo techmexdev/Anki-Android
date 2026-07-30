@@ -17,6 +17,7 @@ package com.ichi2.anki.ui.windows.reviewer
 
 import com.ichi2.anki.CollectionManager
 import com.ichi2.anki.common.time.TimeManager
+import com.ichi2.anki.libanki.stats.brainliftScoreSnapshot
 import com.ichi2.anki.preferences.reviewer.MenuDisplayType
 import com.ichi2.anki.preferences.reviewer.ReviewerMenuRepository
 import com.ichi2.anki.preferences.reviewer.ViewerAction
@@ -31,7 +32,7 @@ import java.net.ServerSocket
 
 class StudyScreenRepository(
     private val prefs: PrefsRepository = Prefs,
-) {
+) : BrainliftEvidenceLoader {
     val isMarkShownInToolbar: Boolean
     val isFlagShownInToolbar: Boolean
     var isWhiteboardEnabled by prefs.booleanPref(KEY_WHITEBOARD_ENABLED, false)
@@ -72,6 +73,11 @@ class StudyScreenRepository(
     suspend fun getCustomSchedulingJs(): String = CollectionManager.withCol { cardStateCustomizer }
 
     suspend fun getShouldShowNextTimes(): Boolean = CollectionPreferences.getShowIntervalOnButtons()
+
+    override suspend fun load() =
+        CollectionManager.withCol {
+            brainliftScoreSnapshot(DEFAULT_MCAT_TOPICS)
+        }
 
     companion object {
         private const val KEY_WHITEBOARD_ENABLED = "whiteboardEnabled"

@@ -17,6 +17,7 @@ package com.ichi2.anki.ui.windows.reviewer
 
 import android.content.res.Resources
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import anki.stats.BrainliftEvidenceScore
 import com.github.ivanshafran.sharedpreferencesmock.SPMockBuilder
 import com.ichi2.anki.CollectionManager
 import com.ichi2.anki.EmptyApplicationCategory
@@ -70,5 +71,17 @@ class StudyScreenRepositoryCollectionTest : JvmTest() {
 
             assertNewValue(true)
             assertNewValue(false)
+        }
+
+    @Test
+    fun `brainlift evidence is loaded from the collection backend`() =
+        runTest {
+            val snapshot = repository.load()
+
+            assertEquals(DEFAULT_MCAT_TOPICS.map { it.name }, snapshot.topicsList.map { it.name })
+            assertEquals(DEFAULT_MCAT_TOPICS.map { it.tag }, snapshot.topicsList.map { it.tag })
+            assertEquals(BrainliftEvidenceScore.Availability.ABSTAINED, snapshot.memory.availability)
+            assertEquals(BrainliftEvidenceScore.Availability.ABSTAINED, snapshot.performance.availability)
+            assertEquals(BrainliftEvidenceScore.Availability.ABSTAINED, snapshot.readiness.availability)
         }
 }
