@@ -60,7 +60,6 @@ def gitCommitHash = providers.exec {
  */
 def buildTimeMillis = providers.gradleProperty("buildTime")
     .orElse(providers.provider { System.currentTimeMillis().toString() })
-def ankiCoreCommit = providers.gradleProperty("ankiCommit").orElse("not-embedded")
 
 android {
     namespace = "com.ichi2.anki"
@@ -88,7 +87,6 @@ android {
         buildConfigField "String", "BACKEND_VERSION", "\"${libs.versions.ankiBackend.get()}\""
         buildConfigField "Boolean", "ENABLE_LEAK_CANARY", "false"
         buildConfigField "String", "GIT_COMMIT_HASH", "\"${gitCommitHash.get()}\""
-        buildConfigField "String", "ANKI_CORE_COMMIT", "\"${ankiCoreCommit.get()}\""
         buildConfigField "Boolean", "BRAINLIFT_PROOF", "false"
         buildConfigField "long", "BUILD_TIME", buildTimeMillis.get()
         resValue "string", "app_name", "AnkiDroid"
@@ -216,7 +214,6 @@ android {
             versionNameSuffix "-brainlift"
             matchingFallbacks = ['debug']
             buildConfigField "Boolean", "BRAINLIFT_PROOF", "true"
-            buildConfigField "String", "ANKI_CORE_COMMIT", "\"${ankiCoreCommit.get()}\""
             resValue "string", "app_name", "Brainlift Anki"
         }
 
@@ -517,18 +514,18 @@ dependencies {
 
     implementation libs.protobuf.kotlin.lite // This is required when loading from a file
 
-    // TODO: migrate to `addAnkiBackendDependencies(...)` when this is a gradle.kts file
-    Properties localProperties = new Properties()
-    if (project.rootProject.file('local.properties').exists()) {
-        localProperties.load(project.rootProject.file('local.properties').newDataInputStream())
+    // Brainlift requires the sibling backend because the published API does not
+    // contain the evidence contract yet.
+    def brainliftBackend = rootProject.file("../Anki-Android-Backend/rsdroid/build/outputs/aar/rsdroid-release.aar")
+    def brainliftBackendTesting = rootProject.file("../Anki-Android-Backend/rsdroid-testing/build/libs/rsdroid-testing.jar")
+    if (!brainliftBackend.isFile() || !brainliftBackendTesting.isFile()) {
+        throw new GradleException(
+            "Brainlift requires the sibling Anki-Android-Backend artifacts. Run ../Anki-Android-Backend/build.sh first."
+        )
     }
-    if (localProperties['local_backend'] == "true") {
-        implementation(files(rootProject.file("../Anki-Android-Backend/rsdroid/build/outputs/aar/rsdroid-release.aar")))
-        testImplementation(files(rootProject.file("../Anki-Android-Backend/rsdroid-testing/build/libs/rsdroid-testing.jar")))
-    } else {
-        implementation libs.ankiBackend.backend
-        testImplementation libs.ankiBackend.testing
-    }
+    implementation(files(brainliftBackend))
+    testImplementation(files(brainliftBackendTesting))
+    testImplementation "org.apache.commons:commons-exec:1.6.0"
 
     // May need a resolution strategy for support libs to our versions
     implementation libs.acra.limiter

@@ -41,7 +41,9 @@ class BrainliftEvidenceTest {
                 .setCoverage(0.43)
                 .setConfidence(BrainliftEvidenceScore.Confidence.NONE)
                 .setRatedReviews(4)
+                .addReasons("memory_unavailable")
                 .addReasons("performance_unavailable")
+                .addReasons("joint_topic_coverage_below:0.8")
                 .build()
         val snapshot =
             BrainliftScoreSnapshotResponse
@@ -53,7 +55,10 @@ class BrainliftEvidenceTest {
 
         assertFalse(readinessRow.available)
         assertEquals("Not enough evidence", readinessRow.value)
-        assertEquals("Waiting for held-out Performance evidence", readinessRow.detail)
+        assertEquals(
+            "Waiting for Memory evidence · Waiting for held-out Performance evidence · Waiting for joint topic coverage (43%/80%)",
+            readinessRow.detail,
+        )
         assertEquals("43%", readinessRow.coverage)
     }
 
@@ -112,5 +117,11 @@ class BrainliftEvidenceTest {
             .setUpdatedAtSecs(1_785_364_800)
             .setRatedReviews(20)
             .setSuccessfulReviews(18)
-            .build()
+            .addReasons(
+                if (scale == BrainliftEvidenceScore.Scale.MCAT) {
+                    "readiness_combines_memory_and_held_out_performance"
+                } else {
+                    "memory_from_ordinary_rated_reviews"
+                },
+            ).build()
 }

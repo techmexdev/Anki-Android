@@ -93,6 +93,7 @@ import timber.log.Timber
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.reflect.jvm.jvmName
+import net.ankiweb.rsdroid.BuildConfig as RsdroidBuildConfig
 
 class ReviewerFragment :
     CardViewerFragment(R.layout.fragment_reviewer),
@@ -402,7 +403,11 @@ class ReviewerFragment :
     private fun setupBrainliftEvidence() {
         binding.brainliftCommit.isVisible = BuildConfig.BRAINLIFT_PROOF
         if (BuildConfig.BRAINLIFT_PROOF) {
-            binding.brainliftCommit.text = getString(R.string.brainlift_anki_commit, BuildConfig.ANKI_CORE_COMMIT)
+            binding.brainliftCommit.text =
+                getString(
+                    R.string.brainlift_anki_commit,
+                    RsdroidBuildConfig.ANKI_COMMIT_HASH,
+                )
         }
         viewModel.brainliftEvidenceFlow
             .flowWithLifecycle(lifecycle)

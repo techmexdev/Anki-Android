@@ -15,11 +15,13 @@ Do not commit `local.properties`.
 
 ## Build
 
-Record the exact Anki submodule commit and pass it into the proof variant:
+Build the sibling backend first. The app always consumes those local artifacts,
+and the proof UI reads its Anki commit directly from the packaged backend
+`BuildConfig`:
 
 ```sh
-ANKI_COMMIT="$(git -C ../Anki-Android-Backend/anki rev-parse HEAD)"
-./gradlew :AnkiDroid:assemblePlayBrainliftProof -PankiCommit="$ANKI_COMMIT"
+../Anki-Android-Backend/build.sh
+./gradlew :AnkiDroid:assemblePlayBrainliftProof
 ```
 
 The proof variant:
@@ -53,6 +55,7 @@ Inspect the proof APK's package and embedded commit before installation:
 AAPT2="$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)/aapt2"
 APK="AnkiDroid/build/outputs/apk/play/brainliftProof/AnkiDroid-play-arm64-v8a-brainliftProof.apk"
 "$AAPT2" dump badging "$APK" | grep -E "package:|application-label:|native-code:"
+ANKI_COMMIT="$(git -C ../Anki-Android-Backend/anki rev-parse HEAD)"
 unzip -p "$APK" classes.dex | strings | grep "$ANKI_COMMIT"
 shasum -a 256 "$APK"
 ```

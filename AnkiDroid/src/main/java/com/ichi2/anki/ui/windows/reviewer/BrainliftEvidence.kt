@@ -155,7 +155,7 @@ object BrainliftEvidencePresenter {
                 },
             detail =
                 if (available) {
-                    "${score.successfulReviews}/${score.ratedReviews} successful reviews"
+                    availableDetail(score)
                 } else {
                     abstentionDetail(score)
                 },
@@ -165,24 +165,41 @@ object BrainliftEvidencePresenter {
         )
     }
 
+    private fun availableDetail(score: BrainliftEvidenceScore): String =
+        (
+            listOf("${score.successfulReviews}/${score.ratedReviews} successful reviews") +
+                score.reasonsList.map { reasonText(score, it) }
+        ).joinToString(" · ")
+
     private fun abstentionDetail(score: BrainliftEvidenceScore): String {
-        for (reason in score.reasonsList) {
-            when {
-                reason == "no_qualifying_reviews" -> return "No qualifying rated reviews yet"
-                reason.startsWith("minimum_rated_reviews_not_met:") -> {
-                    val minimum = reason.substringAfter(":")
-                    return "Waiting for rated reviews (${score.ratedReviews}/$minimum)"
-                }
-                reason.startsWith("joint_topic_coverage_below:") -> {
-                    val minimum = reason.substringAfter(":").toDoubleOrNull() ?: 0.0
-                    return "Waiting for joint topic coverage (${percent(score.coverage)}/${percent(minimum)})"
-                }
-                reason == "memory_unavailable" -> return "Waiting for Memory evidence"
-                reason == "performance_unavailable" -> return "Waiting for held-out Performance evidence"
-            }
+        val reasons = score.reasonsList.map { reasonText(score, it) }
+        return if (reasons.isEmpty()) {
+            "Waiting for enough rated review evidence"
+        } else {
+            reasons.joinToString(" · ")
         }
-        return "Waiting for enough rated review evidence"
     }
+
+    private fun reasonText(
+        score: BrainliftEvidenceScore,
+        reason: String,
+    ): String =
+        when {
+            reason == "no_qualifying_reviews" -> "No qualifying rated reviews yet"
+            reason.startsWith("minimum_rated_reviews_not_met:") ->
+                "Waiting for rated reviews (${score.ratedReviews}/${reason.substringAfter(":")})"
+            reason.startsWith("joint_topic_coverage_below:") -> {
+                val minimum = reason.substringAfter(":").toDoubleOrNull() ?: 0.0
+                "Waiting for joint topic coverage (${percent(score.coverage)}/${percent(minimum)})"
+            }
+            reason == "memory_unavailable" -> "Waiting for Memory evidence"
+            reason == "performance_unavailable" -> "Waiting for held-out Performance evidence"
+            reason == "memory_from_ordinary_rated_reviews" -> "Source: ordinary rated reviews"
+            reason == "performance_from_held_out_rated_reviews" -> "Source: held-out rated reviews"
+            reason == "readiness_combines_memory_and_held_out_performance" ->
+                "Source: Memory and held-out Performance"
+            else -> reason
+        }
 
     private fun percent(value: Double): String = "${(value * 100).roundToInt()}%"
 
