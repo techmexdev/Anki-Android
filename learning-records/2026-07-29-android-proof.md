@@ -3,13 +3,13 @@
 ## Source matrix
 
 - Anki core embedded in the backend and proof APK:
-  `9bfbb7b710def7519577d9ac8879817bf9747333`
+  `2231760d2edb52f8fae224a051775b548eba2dcf`
 - Anki Android backend:
-  `14d7b093315a7311470fbb65a3648389b3a223a8`
+  `33f7faeb4dc657d7ecf2ba0eb27a6d27224b06d1`
 - AnkiDroid base:
   `4f4ffdf6043f6ee0ed6c1ea17c489f972de3ed14`
 - AnkiDroid feature:
-  `72b250ef0430497aa29b7a49ccaed8bb01abd450`
+  `a1390bebac99daae6179adc90d3c09554f2456ac`
 
 ## Feasible host work
 
@@ -35,15 +35,15 @@
 - Proof application label: `Brainlift Anki`.
 - Proof version: `2.25.0alpha2-brainlift`.
 - Proof ARM64 APK SHA-256:
-  `e7f8ce334be01b09954a81e767e52db125bf85b75ad138f42b9d2a05df10c632`.
+  `2b688722a972a05bd1245249cc38af70f63f07eaf16fa164ec17a87e9b33c193`.
 - The exact Anki commit above was found in the proof APK's DEX payload.
 - The proof APK contains `lib/arm64-v8a/librsdroid.so`.
 - Backend AAR SHA-256:
-  `3f13fa155e5d407f3214f5d185e1752fb40a7b8d247412a9ed3f5f5b7e67250b`.
+  `138cb213b29abdec21b5e2940d07d3332e32350d80a65aa05d676c3686b5b728`.
 - Backend testing JAR SHA-256:
-  `f886eb45aec2525103318e8fc1bb10ad1adf922b5621cafd8d2cbf525fbe5294`.
+  `898641f879475e54186566a7f464853bff9d4792db4548ae0a350cfc59108325`.
 - Backend Android-test APK SHA-256:
-  `04c92a65861ac6051703ec446c0de2f2d7e5ef56bb41a1cec6b64b9e38c7b916`.
+  `57517441eb5def38925b4d96958b1e4cb1d8e5ec91ce22f4b0cd3ba6ccbbf9c8`.
 - A combined parallel invocation of both APK package tasks hit an Android
   incremental-splitter failure. Each variant built successfully when run as its
   own authoritative packaging command.
