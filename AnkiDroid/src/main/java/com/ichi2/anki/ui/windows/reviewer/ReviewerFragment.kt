@@ -36,6 +36,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import anki.scheduler.CardAnswer.Rating
+import com.ichi2.anki.BuildConfig
 import com.ichi2.anki.CollectionManager
 import com.ichi2.anki.DispatchKeyEventListener
 import com.ichi2.anki.Flag
@@ -92,6 +93,7 @@ import timber.log.Timber
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.reflect.jvm.jvmName
+import net.ankiweb.rsdroid.BuildConfig as RsdroidBuildConfig
 
 class ReviewerFragment :
     CardViewerFragment(R.layout.fragment_reviewer),
@@ -163,6 +165,7 @@ class ReviewerFragment :
         setupTypeAnswer()
         setupAnswerButtons()
         setupCounts()
+        setupBrainliftEvidence()
         setupMenu()
         setupToolbarPosition()
         setupAnswerTimer()
@@ -394,6 +397,66 @@ class ReviewerFragment :
             if (!CollectionPreferences.getShowRemainingDueCounts()) {
                 binding.studyCounts.isVisible = false
             }
+        }
+    }
+
+    private fun setupBrainliftEvidence() {
+        binding.brainliftCommit.isVisible = BuildConfig.BRAINLIFT_PROOF
+        if (BuildConfig.BRAINLIFT_PROOF) {
+            binding.brainliftCommit.text =
+                getString(
+                    R.string.brainlift_anki_commit,
+                    RsdroidBuildConfig.ANKI_COMMIT_HASH,
+                )
+        }
+        viewModel.brainliftEvidenceFlow
+            .flowWithLifecycle(lifecycle)
+            .collectLatestIn(lifecycleScope) { panel ->
+                val rows = panel.rows.associateBy { it.signal }
+                binding.brainliftMemory.text = rows.getValue(BrainliftSignal.MEMORY).render()
+                binding.brainliftPerformance.text = rows.getValue(BrainliftSignal.PERFORMANCE).render()
+                binding.brainliftReadiness.text = rows.getValue(BrainliftSignal.READINESS).render()
+                binding.brainliftSubtitle.text =
+                    getString(
+                        if (panel.backendUnavailable) {
+                            R.string.brainlift_backend_unavailable
+                        } else {
+                            R.string.brainlift_evidence_subtitle
+                        },
+                    )
+            }
+    }
+
+    private fun BrainliftScoreRow.render(): String {
+        val label =
+            getString(
+                when (signal) {
+                    BrainliftSignal.MEMORY -> R.string.brainlift_memory
+                    BrainliftSignal.PERFORMANCE -> R.string.brainlift_performance
+                    BrainliftSignal.READINESS -> R.string.brainlift_readiness
+                },
+            )
+        return if (available && range != null) {
+            getString(
+                R.string.brainlift_score_available,
+                label,
+                value,
+                range,
+                detail,
+                coverage,
+                confidence,
+                updated,
+            )
+        } else {
+            getString(
+                R.string.brainlift_score_unavailable,
+                label,
+                value,
+                detail,
+                coverage,
+                confidence,
+                updated,
+            )
         }
     }
 

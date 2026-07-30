@@ -51,6 +51,15 @@
     <string name="ease_button_good" maxLength="41" comment="In the reviewer, in the answer side. Label of the button that used by the user to state their answer was good.">Good</string>
     <string name="ease_button_easy" maxLength="41" comment="In the reviewer, in the answer side. Label of the button that used by the user to state that finding the answer to the question was easy.">Easy</string>
     <string name="show_answer_hint_long_press" comment="In the reviewer, hint is shown when touching the show answer button and the user has the long-press accessibility setting enabled">\'%s\' is enabled</string>
+    <string name="brainlift_evidence_title" comment="Title of the evidence panel shown while reviewing cards.">Brainlift evidence</string>
+    <string name="brainlift_evidence_subtitle" comment="Subtitle explaining that the evidence panel does not combine its three signals.">Collection-wide evidence; signals stay separate</string>
+    <string name="brainlift_backend_unavailable" comment="Subtitle shown when the evidence query fails but reviewing remains usable.">Evidence temporarily unavailable; reviewing remains available</string>
+    <string name="brainlift_memory" comment="Label for memory evidence in the review screen.">Memory</string>
+    <string name="brainlift_performance" comment="Label for held-out performance evidence in the review screen.">Performance</string>
+    <string name="brainlift_readiness" comment="Label for projected exam readiness evidence in the review screen.">Readiness</string>
+    <string name="brainlift_score_available" comment="Available evidence row. Parameters are label, estimate, range, review detail, coverage, confidence, and update time.">%1$s: %2$s · range %3$s\n%4$s · coverage %5$s · confidence %6$s · %7$s</string>
+    <string name="brainlift_score_unavailable" comment="Unavailable or loading evidence row. Parameters are label, status, reason, coverage, confidence, and update time.">%1$s: %2$s\n%3$s · coverage %4$s · confidence %5$s · %6$s</string>
+    <string name="brainlift_anki_commit" comment="Exact Anki core source commit embedded in the proof build.">Anki core %s</string>
 
     <!-- General -->
     <string name="undo" maxLength="28" comment="When tapping on this text, the last action is undone.">Undo</string>

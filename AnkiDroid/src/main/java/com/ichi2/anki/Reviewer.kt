@@ -1827,7 +1827,7 @@ open class Reviewer :
         private val flagItemIds: Set<Int> = Flag.entries.map { it.id }.toSet()
 
         fun getIntent(context: Context): Intent =
-            if (Prefs.isNewStudyScreenEnabled) {
+            if (BuildConfig.BRAINLIFT_PROOF || Prefs.isNewStudyScreenEnabled) {
                 ReviewerFragment.getIntent(context)
             } else {
                 Intent(context, Reviewer::class.java)

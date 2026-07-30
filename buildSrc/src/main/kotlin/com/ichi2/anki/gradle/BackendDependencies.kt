@@ -16,6 +16,8 @@ private const val RSDROID_AAR =
     "rsdroid/build/outputs/aar/rsdroid-release.aar"
 private const val RSDROID_TESTING_JAR =
     "rsdroid-testing/build/libs/rsdroid-testing.jar"
+private const val COMMONS_EXEC =
+    "org.apache.commons:commons-exec:1.6.0"
 
 /**
  * Adds the Anki backend (rsdroid) dependencies, choosing between the locally-built
@@ -31,6 +33,9 @@ fun DependencyHandlerScope.addAnkiBackendDependencies(project: Project) {
 
         addBackendArtifact("implementation", useLocalBackend, RSDROID_AAR, "ankiBackend-backend")
         addBackendArtifact("testImplementation", useLocalBackend, RSDROID_TESTING_JAR, "ankiBackend-testing")
+        if (useLocalBackend) {
+            dependencies.add("testImplementation", COMMONS_EXEC)
+        }
 
         // protobuf is required when loading from a file, regardless of the backend source
         dependencies.addProvider("implementation", libsLibrary("protobuf-kotlin-lite"))
@@ -38,6 +43,9 @@ fun DependencyHandlerScope.addAnkiBackendDependencies(project: Project) {
         if (project.hasTestFixtures) {
             addBackendArtifact("testFixturesImplementation", useLocalBackend, RSDROID_AAR, "ankiBackend-backend")
             addBackendArtifact("testFixturesImplementation", useLocalBackend, RSDROID_TESTING_JAR, "ankiBackend-testing")
+            if (useLocalBackend) {
+                dependencies.add("testFixturesImplementation", COMMONS_EXEC)
+            }
             dependencies.addProvider("testFixturesImplementation", libsLibrary("protobuf-kotlin-lite"))
         }
     }

@@ -16,6 +16,8 @@
 
 package com.ichi2.anki.libanki.stats
 
+import anki.stats.BrainliftScoreSnapshotResponse
+import anki.stats.BrainliftTopic
 import com.ichi2.anki.libanki.Collection
 
 // These take and return bytes that the frontend TypeScript code will encode/decode.
@@ -34,3 +36,12 @@ fun Collection.getGraphPreferencesRaw(): ByteArray {
 }
 
 fun Collection.setGraphPreferencesRaw(input: ByteArray): ByteArray = backend.setGraphPreferencesRaw(input)
+
+/**
+ * Returns backend-owned Brainlift evidence derived from syncable collection state.
+ *
+ * Callers must invoke this off the main thread. The query is read-only and does
+ * not implement any scoring or scheduling logic in Kotlin.
+ */
+fun Collection.brainliftScoreSnapshot(topics: Iterable<BrainliftTopic>): BrainliftScoreSnapshotResponse =
+    backend.brainliftScoreSnapshot(topics)

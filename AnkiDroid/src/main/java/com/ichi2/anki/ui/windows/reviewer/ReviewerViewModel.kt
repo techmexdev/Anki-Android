@@ -113,6 +113,8 @@ class ReviewerViewModel(
     val pageUpFlow = MutableSharedFlow<Unit>()
     val pageDownFlow = MutableSharedFlow<Unit>()
     val statesMutationEvalFlow = MutableSharedFlow<String>()
+    private val brainliftEvidence = BrainliftEvidenceStateHolder(repository)
+    val brainliftEvidenceFlow = brainliftEvidence.state
 
     override val server: AnkiServer = AnkiServer(this, repository.getServerPort()).also { it.start() }
     private val stateMutationKey = repository.generateStateMutationKey()
@@ -150,6 +152,7 @@ class ReviewerViewModel(
             // To ensure consistent height, load the times to match the height of the `Show answer`
             // button with the answer buttons.
             updateNextTimes()
+            brainliftEvidence.refresh()
         }
         cardMediaPlayer.setOnMediaGroupCompletedListener {
             if (!autoAdvance.shouldWaitForAudio()) return@setOnMediaGroupCompletedListener
@@ -528,6 +531,7 @@ class ReviewerViewModel(
             onLeech(isSuspended)
         }
         updateCurrentCard()
+        brainliftEvidence.refresh()
     }
 
     // https://github.com/ankitects/anki/blob/da907053460e2b78c31199f97bbea3cf3600f0c2/qt/aqt/reviewer.py#L954
@@ -796,6 +800,7 @@ class ReviewerViewModel(
             updateUndoAndRedoLabels()
 
             if (handler == this) return@launchCatchingIO
+            brainliftEvidence.refresh()
 
             when {
                 changes.studyQueues -> updateCurrentCard()
