@@ -56,7 +56,9 @@ AAPT2="$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | ta
 APK="AnkiDroid/build/outputs/apk/play/brainliftProof/AnkiDroid-play-arm64-v8a-brainliftProof.apk"
 "$AAPT2" dump badging "$APK" | grep -E "package:|application-label:|native-code:"
 ANKI_COMMIT="$(git -C ../Anki-Android-Backend/anki rev-parse HEAD)"
-unzip -p "$APK" classes.dex | strings | grep "$ANKI_COMMIT"
+BACKEND_COMMIT="$(git -C ../Anki-Android-Backend rev-parse HEAD)"
+unzip -p "$APK" 'classes*.dex' | strings | grep -F "$ANKI_COMMIT"
+unzip -p "$APK" 'classes*.dex' | strings | grep -F "$BACKEND_COMMIT"
 shasum -a 256 "$APK"
 ```
 

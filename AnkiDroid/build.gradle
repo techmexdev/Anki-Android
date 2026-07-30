@@ -516,6 +516,16 @@ dependencies {
 
     // Brainlift requires the sibling backend because the published API does not
     // contain the evidence contract yet.
+    Properties localProperties = new Properties()
+    def localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.isFile()) {
+        localProperties.load(localPropertiesFile.newDataInputStream())
+    }
+    if (localProperties["local_backend"] != "true") {
+        throw new GradleException(
+            "Brainlift requires local_backend=true in local.properties so every module uses the sibling backend."
+        )
+    }
     def brainliftBackend = rootProject.file("../Anki-Android-Backend/rsdroid/build/outputs/aar/rsdroid-release.aar")
     def brainliftBackendTesting = rootProject.file("../Anki-Android-Backend/rsdroid-testing/build/libs/rsdroid-testing.jar")
     if (!brainliftBackend.isFile() || !brainliftBackendTesting.isFile()) {
